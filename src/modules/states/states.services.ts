@@ -2,8 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ApplyTransformInterceptorToMethod } from 'src/decorators/apply-transform-interceptor-to-method.decorator';
 import { State } from 'src/models/class.transformer.ts/state';
-import { StateRepository } from 'src/repository/state';
-import StoredProcedureRepository from 'src/repository/stored-procedure-repository';
+import { StateRepository } from 'src/core/repository/state';
+import StoredProcedureRepository from 'src/core/repository/stored-procedure-repository';
 
 @Injectable()
 export class StateService {

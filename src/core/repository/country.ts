@@ -1,12 +1,11 @@
 import _ from 'lodash';
-import BaseRepository from './baseRepository';
 import {
-  AnyRecord,
+  MODELS_NAME,
+  ModelScalarFields,
   ModelStructure,
   ModelTypes,
-  ModelScalarFields,
-  MODELS_NAME,
 } from './prisma-repo';
+import BaseRepository from './baseRepository';
 
 // This type will be used if you want to extends the functions in country Class
 

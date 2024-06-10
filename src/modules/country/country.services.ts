@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { CountryRepository } from 'src/repository/country';
+import { CountryRepository } from 'src/core/repository/country';
 import { CreateCountryDto, UpdateCountryDto } from './country.DTO';
 
 @Injectable()
