@@ -6,6 +6,15 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+// prisma repo generator
+generator repo {
+  provider = "prisma-repo"
+  output   = "../src/repository"
+  query    = true
+  warn     = true
+  info     = true
+  error    = true
+}
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model city {
