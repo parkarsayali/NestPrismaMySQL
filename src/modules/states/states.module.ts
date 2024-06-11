@@ -11,12 +11,12 @@
 // export class StatesModule {}
 
 import { Module } from '@nestjs/common';
-import { StateRepository } from 'src/core/repository/state';
 import { StateService } from './states.services';
 import { StatesController } from './states.controller';
 import { PrismaClient } from '@prisma/client';
 import StoredProcedureRepository from 'src/core/repository/stored-procedure-repository';
 import { PrismaModule } from 'src/database/prisma.module';
+import { StateRepository } from './state.repository';
 
 @Module({
   imports: [PrismaModule],

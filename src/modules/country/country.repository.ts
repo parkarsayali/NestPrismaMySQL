@@ -1,13 +1,12 @@
-import _ from 'lodash';
+// This type will be used if you want to extends the functions in country Class
+
+import BaseRepository from 'src/core/repository/baseRepository';
 import {
   MODELS_NAME,
   ModelScalarFields,
   ModelStructure,
   ModelTypes,
-} from './prisma-repo';
-import BaseRepository from './baseRepository';
-
-// This type will be used if you want to extends the functions in country Class
+} from 'src/core/repository/prisma-repo';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 type Where = ModelTypes[typeof MODELS_NAME.COUNTRY]['Where'];

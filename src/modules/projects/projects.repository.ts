@@ -1,11 +1,10 @@
-import _ from 'lodash';
+import BaseRepository from 'src/core/repository/baseRepository';
 import {
   MODELS_NAME,
   ModelScalarFields,
   ModelStructure,
   ModelTypes,
-} from './prisma-repo';
-import BaseRepository from './baseRepository';
+} from 'src/core/repository/prisma-repo';
 
 // This type will be used if you want to extends the functions in project Class
 
