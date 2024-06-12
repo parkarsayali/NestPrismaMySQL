@@ -9,7 +9,7 @@ datasource db {
 // prisma repo generator
 generator repo {
   provider = "prisma-repo"
-  output   = "../src/generated"
+  output   = "../../generated"
   query    = true
   warn     = true
   info     = true
