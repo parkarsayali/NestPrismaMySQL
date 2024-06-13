@@ -11,8 +11,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { setupRedoc } from './core/middleware/redoc.middleware';
+import * as dotenv from 'dotenv';
 
 async function bootstrap() {
+  dotenv.config();
   const app = await NestFactory.create(AppModule);
   const options = new DocumentBuilder()
     .setTitle('RD Brothers Api')

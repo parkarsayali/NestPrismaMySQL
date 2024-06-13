@@ -6,10 +6,10 @@ import {
   Delete,
   Body,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 
 import { StateService } from './states.services';
-import { SuccessError } from 'src/decorators/success-error.decorator';
 import { UpdateStateDto } from './dto/UpdateState.dto';
 import {
   AggregateStateSuccess,
@@ -27,6 +27,9 @@ import {
 } from 'src/shared/constants/messages/error.messages';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CreateStateDto } from './dto/CreateState.dto';
+import { JwtAuthGuard } from 'src/core/auth/jwt-auth-guard';
+import { SuccessError } from 'src/core/decorator/success-error.decorator';
+import { Public } from 'src/core/auth/public.decorator';
 
 @Controller('states')
 export class StatesController {
@@ -36,6 +39,8 @@ export class StatesController {
    *
    * @returns List of all the states
    */
+  // @UseGuards(JwtAuthGuard)
+  @Public()
   @Get()
   @SuccessError()
   @ApiOperation({ summary: 'Get all states' })
@@ -146,6 +151,7 @@ export class StatesController {
    *
    * @returns List of all the states including soft-deleted
    */
+  @UseGuards(JwtAuthGuard)
   @Get('/include-all')
   @SuccessError()
   async findIncludeAll() {
@@ -170,6 +176,7 @@ export class StatesController {
    *
    * @returns List of all the states with Select
    */
+  @UseGuards(JwtAuthGuard)
   @Get('/select')
   @SuccessError()
   async findAllSelect() {
@@ -194,6 +201,7 @@ export class StatesController {
    *
    * @returns List of all the states wih Select and OrderBy
    */
+  @UseGuards(JwtAuthGuard)
   @Get('/selectOrderBy')
   @SuccessError()
   async findAllSelectOrder() {
@@ -219,6 +227,7 @@ export class StatesController {
    *
    * @returns List of all the states wih included relations and OrderBy
    */
+  @UseGuards(JwtAuthGuard)
   @Get('/includeOrderBy')
   @SuccessError()
   async findAllIIncludeOrder() {
@@ -265,6 +274,7 @@ export class StatesController {
    *
    * @returns List of all the states using stored-procedures
    */
+  @UseGuards(JwtAuthGuard)
   @Get('/sp')
   @SuccessError()
   async getAllSP() {
@@ -291,6 +301,7 @@ export class StatesController {
    * @param id : state_id
    * @returns A single state
    */
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @SuccessError()
   @ApiOperation({
@@ -421,6 +432,7 @@ export class StatesController {
    * @param id unique parameter
    * @returns unique record based on unique parameter provided
    */
+  @UseGuards(JwtAuthGuard)
   @Get('id/:id')
   @SuccessError()
   async findUniqueById(@Param('id') id: string) {
@@ -455,6 +467,7 @@ export class StatesController {
    * @param name unique parameter
    * @returns unique record based on unique parameter provided
    */
+  @UseGuards(JwtAuthGuard)
   @Get('name/:name')
   @SuccessError()
   async findUniqueByStateName(@Param('name') name: string) {
@@ -488,6 +501,7 @@ export class StatesController {
    * @param data create state payload
    * @returns statusCode,success flag,message,data: newly created state
    */
+  @UseGuards(JwtAuthGuard)
   @Post()
   @SuccessError()
   @ApiOperation({ summary: 'Post state' })
@@ -579,6 +593,7 @@ export class StatesController {
    * @param data update payload
    * @returns statusCode,success flag,message,data - updated state
    */
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @SuccessError()
   @ApiOperation({ summary: 'Update state using state id' })
@@ -679,6 +694,7 @@ export class StatesController {
    * @param id state_id
    * @returns statusCode, success,message
    */
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @SuccessError()
   @ApiOperation({ summary: 'Delete state using state id' })
@@ -736,6 +752,7 @@ export class StatesController {
    * @param id state_id
    * @returns statusCode,success,message
    */
+  @UseGuards(JwtAuthGuard)
   @Put('soft-delete/:id')
   @SuccessError()
   @ApiOperation({
@@ -793,6 +810,7 @@ export class StatesController {
    * @param res - The response object.
    * @returns A response with the count of states.
    */
+  @UseGuards(JwtAuthGuard)
   @Get('/count/data')
   @SuccessError()
   async count() {
@@ -816,7 +834,7 @@ export class StatesController {
       };
     }
   }
-
+  @UseGuards(JwtAuthGuard)
   @Get('/group-by/data')
   @SuccessError()
   async groupBy() {
@@ -858,6 +876,7 @@ export class StatesController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/aggregate/data')
   async aggregate() {
     try {

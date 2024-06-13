@@ -10,6 +10,7 @@ import { Modules } from 'src/modules/module';
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configurations],
+
       envFilePath: `.env.${process.env.NODE_ENV || 'development'}.env`,
     }),
     ...Modules,

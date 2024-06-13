@@ -1,5 +1,6 @@
 // apply-transform-interceptor-to-method.decorator.ts
-import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
+
+import { TransformInterceptor } from '../interceptor/dto.transform.interceptor';
 
 export const ApplyTransformInterceptorToMethod = <T>(
   dtoClass: new (...args: any[]) => T,
