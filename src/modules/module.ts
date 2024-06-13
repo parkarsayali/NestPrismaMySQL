@@ -6,4 +6,6 @@ import { CityModule } from './city/city.module';
 
 import { CountryModule } from './country/country.module';
 
-export const Modules = [StatesModule, CityModule, CountryModule];
+import { UserModule } from './users/user.module';
+
+export const Modules = [StatesModule, CityModule, CountryModule, UserModule];
