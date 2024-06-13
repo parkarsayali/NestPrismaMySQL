@@ -11,7 +11,9 @@ import { CountryService } from './country.services';
 import { SuccessError } from 'src/decorators/success-error.decorator';
 import { CreateCountryDto } from './country.DTO';
 import { UpdateStateDto } from '../states/dto/UpdateState.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Country')
 @Controller('country')
 export class CountryController {
   constructor(private readonly countryService: CountryService) {}

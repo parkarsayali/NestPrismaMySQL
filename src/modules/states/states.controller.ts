@@ -25,9 +25,16 @@ import {
   invalidIDError,
   stateNotFoundError,
 } from 'src/shared/constants/messages/error.messages';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { CreateStateDto } from './dto/CreateState.dto';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('State')
 @Controller('states')
 export class StatesController {
   constructor(private readonly stateService: StateService) {}
@@ -37,7 +44,6 @@ export class StatesController {
    * @returns List of all the states
    */
   @Get()
-  @SuccessError()
   @ApiOperation({ summary: 'Get all states' })
   @ApiResponse({
     status: 200,
@@ -74,6 +80,12 @@ export class StatesController {
                     example: '2024-05-10T00:00:09.000Z',
                   },
                   is_deleted: { type: 'boolean', example: false },
+                  countries: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string', example: 'INDIA' },
+                    },
+                  },
                 },
               },
             },
@@ -90,6 +102,7 @@ export class StatesController {
               created_on: '2024-05-10T00:00:09.000Z',
               modified_on: '2024-05-10T00:00:09.000Z',
               is_deleted: false,
+              countries: { name: 'INDIA' },
             },
             {
               state_id: 2,
@@ -99,6 +112,7 @@ export class StatesController {
               created_on: '2024-05-10T00:00:09.000Z',
               modified_on: '2024-05-10T00:00:09.000Z',
               is_deleted: false,
+              countries: { name: 'INDIA' },
             },
           ],
         },
@@ -123,6 +137,7 @@ export class StatesController {
       },
     },
   })
+  @SuccessError()
   async findAll() {
     try {
       const states = await this.stateService.findAll(false); // Default to not including deleted
@@ -261,6 +276,7 @@ export class StatesController {
       };
     }
   }
+
   /**
    *
    * @returns List of all the states using stored-procedures
@@ -292,9 +308,14 @@ export class StatesController {
    * @returns A single state
    */
   @Get(':id')
-  @SuccessError()
   @ApiOperation({
     summary: 'Get single state by id',
+  })
+  @ApiParam({
+    name: 'id',
+    type: 'Integer',
+    description: 'Enter state id',
+    required: true,
   })
   @ApiResponse({
     status: 200,
@@ -356,6 +377,7 @@ export class StatesController {
     status: 404,
     description: 'State not found',
   })
+  @SuccessError()
   async findOne(@Param('id') id: string) {
     const parseId = parseInt(id);
     if (isNaN(parseId) || parseId <= 0) {
@@ -389,6 +411,7 @@ export class StatesController {
       };
     }
   }
+
   @Get('/softdeleted/:id')
   @SuccessError()
   async findOneDeleted(@Param('id') id: string) {
@@ -416,6 +439,7 @@ export class StatesController {
       };
     }
   }
+
   /**
    *
    * @param id unique parameter
@@ -489,7 +513,6 @@ export class StatesController {
    * @returns statusCode,success flag,message,data: newly created state
    */
   @Post()
-  @SuccessError()
   @ApiOperation({ summary: 'Post state' })
   @ApiBody({
     schema: {
@@ -521,9 +544,26 @@ export class StatesController {
         schema: {
           type: 'object',
           properties: {
-            name: { type: 'string', example: 'Andaman and Nicobar Islands' },
-            alpha_code: { type: 'string', example: 'AND' },
+            state_id: { type: 'integer', example: 96 },
+            name: { type: 'string', example: 'Maharashtra' },
+            alpha_code: { type: 'string', example: 'MH' },
             country_id: { type: 'integer', example: 1 },
+            created_on: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-06-13T12:30:18.000Z',
+            },
+            modified_on: { type: 'string', format: 'date-time', example: null },
+            is_deleted: { type: 'boolean', example: false },
+          },
+          example: {
+            state_id: 96,
+            name: 'Maharashtra',
+            alpha_code: 'MH',
+            country_id: 1,
+            created_on: '2024-06-13T12:30:18.000Z',
+            modified_on: null,
+            is_deleted: false,
           },
         },
       },
@@ -531,18 +571,30 @@ export class StatesController {
         schema: {
           type: 'object',
           properties: {
-            name: { type: 'string', example: 'Andaman and Nicobar Islands' },
-            alpha_code: { type: 'string', example: 'AND' },
+            state_id: { type: 'integer', example: 96 },
+            name: { type: 'string', example: 'Maharashtra' },
+            alpha_code: { type: 'string', example: 'MH' },
             country_id: { type: 'integer', example: 1 },
+            created_on: {
+              type: 'string',
+              format: 'date-time',
+              example: '2024-06-13T12:30:18.000Z',
+            },
+            modified_on: { type: 'string', format: 'date-time', example: null },
+            is_deleted: { type: 'boolean', example: false },
           },
           xml: {
             name: 'RetrieveStateResponseDto',
           },
         },
         example: `
-        <name>Andaman and Nicobar Islands</name>
-        <alpha_code>AND</alpha_code>
+        <state_id>96</state_id>
+        <name>Maharashtra</name>
+        <alpha_code>MH</alpha_code>
         <country_id>1</country_id>
+        <created_on>2024-06-13T12:30:18.000Z</created_on>
+        <modified_on>null</modified_on>
+        <is_deleted>false</is_deleted>
         `,
       },
     },
@@ -555,6 +607,7 @@ export class StatesController {
     status: 500,
     description: 'Internal server error',
   })
+  @SuccessError()
   async create(@Body() data: CreateStateDto) {
     try {
       const newState = await this.stateService.create(data);
@@ -573,6 +626,7 @@ export class StatesController {
       };
     }
   }
+
   /**
    *
    * @param id state_id
@@ -580,7 +634,6 @@ export class StatesController {
    * @returns statusCode,success flag,message,data - updated state
    */
   @Put(':id')
-  @SuccessError()
   @ApiOperation({ summary: 'Update state using state id' })
   @ApiParam({
     name: 'id',
@@ -656,6 +709,7 @@ export class StatesController {
     status: 422,
     description: 'Validation exception',
   })
+  @SuccessError()
   async update(@Param('id') id: string, @Body() data: UpdateStateDto) {
     try {
       const updatedState = await this.stateService.update(+id, data);
@@ -674,13 +728,13 @@ export class StatesController {
       };
     }
   }
+
   /**
    *
    * @param id state_id
    * @returns statusCode, success,message
    */
   @Delete(':id')
-  @SuccessError()
   @ApiOperation({ summary: 'Delete state using state id' })
   @ApiParam({
     name: 'id',
@@ -714,6 +768,7 @@ export class StatesController {
     status: 500,
     description: 'Internal server error',
   })
+  @SuccessError()
   async delete(@Param('id') id: number) {
     try {
       await this.stateService.delete(+id);
@@ -731,13 +786,13 @@ export class StatesController {
       };
     }
   }
+
   /**
    *
    * @param id state_id
    * @returns statusCode,success,message
    */
   @Put('soft-delete/:id')
-  @SuccessError()
   @ApiOperation({
     summary: 'Soft delete state by id',
   })
@@ -769,6 +824,7 @@ export class StatesController {
     status: 500,
     description: 'Internal server error',
   })
+  @SuccessError()
   async softDelete(@Param('id') id: number) {
     try {
       await this.stateService.softDelete(id);
