@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 
 import { StateService } from './states.services';
@@ -144,9 +145,14 @@ export class StatesController {
     },
   })
   @SuccessError()
-  async findAll() {
+  async findAll(@Req() req: Request) {
+    const logger = req['logger'];
+    // console.log('findAll logger', logger);
     try {
+      logger.info('Retrieving all states');
+
       const states = await this.stateService.findAll(false); // Default to not including deleted
+      logger.info('Successfully retrieved all states');
 
       return {
         statusCode: 200,
@@ -155,10 +161,12 @@ export class StatesController {
         data: states,
       }; // Return success response
     } catch (error) {
+      logger.error(`Error retrieving all states: ${error?.message}`);
+
       return {
         statusCode: 500,
         success: false,
-        errorMessage: error.message,
+        errorMessage: error?.message,
       };
     }
   }
@@ -390,7 +398,7 @@ export class StatesController {
     description: 'State not found',
   })
   @SuccessError()
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string, @Req() req: Request) {
     const parseId = parseInt(id);
     if (isNaN(parseId) || parseId <= 0) {
       return {
@@ -399,8 +407,11 @@ export class StatesController {
         errorMessage: invalidIDError,
       };
     }
+    const logger = req['logger'];
 
     try {
+      logger.info('Retrieving state by Id');
+
       const state = await this.stateService.findOne(parseId, false); // Default to not including deleted
       if (!state) {
         return {
@@ -409,6 +420,8 @@ export class StatesController {
           errorMessage: stateNotFoundError,
         };
       }
+      logger.info('Successfully retrieved state by Id');
+
       return {
         statusCode: 200,
         success: true,
@@ -416,10 +429,12 @@ export class StatesController {
         data: state,
       };
     } catch (error) {
+      logger.error(`Error retrieving a state : ${error?.message}`);
+
       return {
         statusCode: 500,
         success: false,
-        errorMessage: error.message,
+        errorMessage: error?.message,
       };
     }
   }

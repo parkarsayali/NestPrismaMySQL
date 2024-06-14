@@ -72,7 +72,8 @@ export function SuccessError(): MethodDecorator {
       try {
         // Call the original controller method
         const result = await originalMethod.apply(this, args);
-        // console.log('success-error result', result);
+
+        console.log('success-error result', result);
         // Handle success response
         if (result !== null && result.statusCode === 200) {
           return {
