@@ -6,8 +6,10 @@
 # Logs
 # Ignore log files
 /log/*
+!/log/.gitkeep
+
 # logs
-*.log
+# *.log
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*

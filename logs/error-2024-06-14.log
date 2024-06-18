@@ -1,0 +1,22 @@
+2024-06-14 15:33:21 error: Error retrieving a state : 
+Invalid `AbstractBaseRepository.model.findFirst()` invocation in
+D:\NestPrismaMySQL\src\core\repository\baseRepository.ts:147:43
+
+  144 }
+  145 
+  146 // @ts-ignore
+→ 147 return AbstractBaseRepository.model.findFirst(
+Can't reach database server at `122.170.99.55:3306`
+
+Please make sure your database server is running at `122.170.99.55:3306`.
+2024-06-14 19:58:51 error: Error retrieving all states: 
+Invalid `AbstractBaseRepository.model.findMany()` invocation in
+D:\NestPrismaMySQL\src\core\repository\baseRepository.ts:101:51
+
+   98 }
+   99 return {
+  100   // @ts-ignore
+→ 101   rows: (await AbstractBaseRepository.model.findMany(
+Can't reach database server at `122.170.99.55:3306`
+
+Please make sure your database server is running at `122.170.99.55:3306`.
