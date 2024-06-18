@@ -6,7 +6,7 @@
 # Logs
 # Ignore log files
 /logs/*
-# !/log/.gitkeep
+!/logs/.gitkeep
 
 # logs
 # *.log
