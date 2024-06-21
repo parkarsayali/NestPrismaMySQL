@@ -8,9 +8,9 @@ import {
   Put,
 } from '@nestjs/common';
 import { CountryService } from './country.services';
-import { SuccessError } from 'src/decorators/success-error.decorator';
 import { CreateCountryDto } from './country.DTO';
 import { UpdateStateDto } from '../states/dto/UpdateState.dto';
+import { SuccessError } from 'src/core/decorator/success-error.decorator';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Country')
