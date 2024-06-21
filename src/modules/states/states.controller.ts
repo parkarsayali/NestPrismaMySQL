@@ -6,6 +6,9 @@ import {
   Delete,
   Body,
   Param,
+  BadRequestException,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 
 import { StateService } from './states.services';
@@ -25,7 +28,7 @@ import {
   invalidIDError,
   stateNotFoundError,
 } from 'src/shared/constants/messages/error.messages';
-import { CreateStateDto } from './dto/CreateState.dto';
+import { CreateStateDto, CreateStateFormDto } from './dto/CreateState.dto';
 import {
   ApiBody,
   ApiOperation,
@@ -33,6 +36,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import path from 'path';
+import { diskStorage } from 'multer';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 
 @ApiTags('State')
 @Controller('states')
@@ -626,6 +636,130 @@ export class StatesController {
       };
     }
   }
+
+  @Post('form')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './src/uploads',
+        filename: (req, file, cb) => {
+          const alphaCode: string = req.body.alpha_code.replace(/\s/g, '');
+          const extension: string = path.parse(file.originalname).ext;
+          cb(null, `${alphaCode}${extension}`);
+        },
+      }),
+      limits: {
+        fileSize: 10 * 1024 * 1024, // 10 MB in bytes
+      },
+      fileFilter: (req, file, cb) => {
+        const allowedMimeTypes = [
+          'image/jpeg',
+          'image/jpg',
+          'image/png',
+          'video/mp4',
+          'video/mkv',
+          'video/x-matroska',
+          'video/avi',
+        ];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          cb(null, true);
+        } else {
+          cb(
+            new BadRequestException(
+              'Only jpg, jpeg, and png files are allowed',
+            ),
+            false,
+          );
+        }
+      },
+    }),
+  )
+  async createStateForm(@Body() data: CreateStateFormDto) {
+    const { country_id } = data;
+    const countryId = Number(country_id);
+    try {
+      const newStateForm = await this.stateService.create({
+        ...data,
+        country_id: countryId,
+      });
+
+      return {
+        statusCode: 201,
+        success: true,
+        message: 'State form created successfully !!!',
+        data: newStateForm,
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        success: false,
+        errorMessage: error.message,
+      };
+    }
+  }
+
+  // @Post('form')
+  // @UseInterceptors(
+  //   FilesInterceptor('files', 10, {
+  //     storage: diskStorage({
+  //       destination: './src/uploads',
+  //       filename: (req, file, cb) => {
+  //         cb(null, file.originalname);
+  //       },
+  //     }),
+  //     limits: {
+  //       fileSize: 10 * 1024 * 1024, // 10 MB in bytes
+  //     },
+  //     fileFilter: (req, file, cb) => {
+  //       const allowedMimeTypes = [
+  //         'image/jpeg',
+  //         'image/jpg',
+  //         'image/png',
+  //         'video/mp4',
+  //         'video/mkv',
+  //         'video/x-matroska',
+  //         'video/avi',
+  //       ];
+  //       if (allowedMimeTypes.includes(file.mimetype)) {
+  //         cb(null, true);
+  //       } else {
+  //         cb(
+  //           new BadRequestException(
+  //             'Only jpg, jpeg, and png files are allowed',
+  //           ),
+  //           false,
+  //         );
+  //       }
+  //     },
+  //   }),
+  // )
+  // async createStateForm(
+  //   @Body() data: CreateStateFormDto,
+  //   @UploadedFiles() files: Express.Multer.File[],
+  // ) {
+  //   const { country_id } = data;
+  //   const countryId = Number(country_id);
+  //   try {
+  //     const newStateForm = await this.stateService.create({
+  //       ...data,
+  //       country_id: countryId,
+  //     });
+
+  //     return {
+  //       statusCode: 201,
+  //       success: true,
+  //       message: 'State form created successfully !!!',
+  //       data: newStateForm,
+  //       files, // Return the files information in the response
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       statusCode: 500,
+  //       success: false,
+  //       errorMessage: error.message,
+  //     };
+  //   }
+  // }
 
   /**
    *

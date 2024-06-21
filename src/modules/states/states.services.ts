@@ -152,6 +152,20 @@ export class StateService {
     return result;
   }
 
+  async createStateForm(data: Prisma.stateCreateInput, file: any) {
+    const result = await StateRepository.create(data);
+    // console.log('create result', result);
+    return { ...result, ...file };
+  }
+
+  // async createStateForm(
+  //   data: Prisma.stateCreateInput,
+  //   files: Express.Multer.File[],
+  // ) {
+  //   const result = await StateRepository.create(data);
+  //   return { ...result, files };
+  // }
+
   async update(id: number, data: Prisma.stateUpdateInput) {
     return StateRepository.update(id, data);
   }

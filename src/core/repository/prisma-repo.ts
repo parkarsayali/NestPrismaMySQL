@@ -63,6 +63,7 @@ export const MODELS_NAME = {
   COUNTRY: 'country',
   PROJECT: 'project',
   STATE: 'state',
+  USERS: 'users',
 } as const;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -72,6 +73,7 @@ export type ModelStructure = {
   country: country;
   project: project;
   state: state;
+  users: 'users';
 };
 
 export type ModelName = keyof ModelStructure;
@@ -133,6 +135,19 @@ export type ModelTypes<T = unknown> = {
     Return: Prisma.projectGetPayload<T>;
   };
   state: {
+    Where: Prisma.stateWhereInput;
+    Select: Prisma.stateSelect;
+    Include: unknown;
+    Create: Prisma.stateCreateInput | Prisma.stateUncheckedCreateInput;
+    Update: Prisma.stateUpdateInput | Prisma.stateUncheckedUpdateInput;
+    Cursor: unknown;
+    Order: Prisma.stateOrderByWithRelationInput;
+    Delegate: Prisma.stateDelegate<undefined>;
+    GroupBy: Prisma.StateGroupByOutputType;
+    // @ts-ignore
+    Return: Prisma.stateGetPayload<T>;
+  };
+  users: {
     Where: Prisma.stateWhereInput;
     Select: Prisma.stateSelect;
     Include: unknown;

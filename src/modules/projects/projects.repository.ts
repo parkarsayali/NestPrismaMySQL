@@ -22,6 +22,6 @@ type Scalar = ModelScalarFields<typeof MODELS_NAME.PROJECT>;
 type Model = ModelStructure[typeof MODELS_NAME.PROJECT];
 /*  eslint-enable @typescript-eslint/no-unused-vars */
 
-class project extends BaseRepository(MODELS_NAME.PROJECT) {}
+class ProjectRepository extends BaseRepository(MODELS_NAME.PROJECT) {}
 
-export default project;
+export default ProjectRepository;

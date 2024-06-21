@@ -2,18 +2,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-// prisma repo generator
 generator repo {
   provider = "prisma-repo"
   output   = "../../generated"
-  query    = true
-  warn     = true
-  info     = true
-  error    = true
+  query    = "true"
+  info     = "true"
+  error    = "true"
+  warn     = "true"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -62,8 +62,6 @@ model country {
   created_on      DateTime  @default(dbgenerated("(now())")) @db.Timestamp(0)
   modified_on     DateTime? @db.Timestamp(0)
   is_deleted      Boolean   @default(false)
-  states          state[]   // Establishing the one-to-many relationship
-
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -93,20 +91,24 @@ model project {
   is_deleted              Boolean   @default(false)
 }
 
- model state {
+model state {
   state_id    Int       @id @default(autoincrement())
-  name        String  @unique  @db.VarChar(100)
+  name        String    @db.VarChar(100)
   alpha_code  String    @db.VarChar(10)
   country_id  Int
   created_on  DateTime  @default(dbgenerated("(now())")) @db.DateTime(0)
   modified_on DateTime? @db.DateTime(0)
   is_deleted  Boolean   @default(false)
-  countries  country   @relation(fields: [country_id], references: [country_id])
-
 }
 
 model todos {
   id          Int    @id @default(autoincrement())
   name        String @db.VarChar(255)
   description String @db.VarChar(255)
+}
+
+model users {
+  user_id Int    @id
+  name    String @db.VarChar(255)
+  age     Int
 }
