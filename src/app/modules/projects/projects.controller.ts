@@ -189,151 +189,151 @@
 //   }
 // }
 
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Post,
-  Req,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { ProjectsService } from './projects.service';
-import { memoryStorage } from 'multer';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
-import { CloudinaryService } from 'src/shared/cloudinary/cloudinary.service';
-import { BackblazeService } from 'src/shared/backblaze/backblaze.service';
-import { VercelService } from 'src/shared/vercel/vercel.service';
+// import {
+//   BadRequestException,
+//   Body,
+//   Controller,
+//   Post,
+//   Req,
+//   UploadedFile,
+//   UseInterceptors,
+// } from '@nestjs/common';
+// import { ProjectsService } from './projects.service';
+// import { memoryStorage } from 'multer';
+// import { FileInterceptor } from '@nestjs/platform-express';
+// import { Request } from 'express';
+// import { CloudinaryService } from 'src/shared/cloudinary/cloudinary.service';
+// import { BackblazeService } from 'src/shared/backblaze/backblaze.service';
+// import { VercelService } from 'src/shared/vercel/vercel.service';
 
-@Controller('project')
-export class ProjectController {
-  constructor(
-    private readonly projectsService: ProjectsService,
-    private readonly cloudinaryService: CloudinaryService,
-    private readonly backBlazeService: BackblazeService,
-    private readonly vercelService: VercelService,
-  ) {}
+// @Controller('project')
+// export class ProjectController {
+//   constructor(
+//     private readonly projectsService: ProjectsService,
+//     private readonly cloudinaryService: CloudinaryService,
+//     private readonly backBlazeService: BackblazeService,
+//     private readonly vercelService: VercelService,
+//   ) {}
 
-  @Post('cloudinary')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: memoryStorage(),
-      limits: {
-        fileSize: 10 * 1024 * 1024, // 10 MB in bytes
-      },
-    }),
-  )
-  async createProjectCloudinary(
-    @Body() data: any,
-    @Req() req: Request,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    const {
-      name,
-      pincode,
-      contact_no_1,
-      email_id_for_sales,
-      disclaimer,
-      contact_no_sales_1,
-    } = data;
-    try {
-      const url = req.originalUrl;
-      const val = url.split('/')[1];
-      const folderName =
-        val.slice(0, 1).toUpperCase() + val.slice(1).toLowerCase();
+//   @Post('cloudinary')
+//   @UseInterceptors(
+//     FileInterceptor('file', {
+//       storage: memoryStorage(),
+//       limits: {
+//         fileSize: 10 * 1024 * 1024, // 10 MB in bytes
+//       },
+//     }),
+//   )
+//   async createProjectCloudinary(
+//     @Body() data: any,
+//     @Req() req: Request,
+//     @UploadedFile() file: Express.Multer.File,
+//   ) {
+//     const {
+//       name,
+//       pincode,
+//       contact_no_1,
+//       email_id_for_sales,
+//       disclaimer,
+//       contact_no_sales_1,
+//     } = data;
+//     try {
+//       const url = req.originalUrl;
+//       const val = url.split('/')[1];
+//       const folderName =
+//         val.slice(0, 1).toUpperCase() + val.slice(1).toLowerCase();
 
-      const result = await this.projectsService.createProject({
-        name,
-        pincode,
-        contact_no_1,
-        email_id_for_sales,
-        disclaimer,
-        contact_no_sales_1,
-      });
-      const cloudinaryPath = `${folderName}/${result.project_id}`;
-      const upload = await this.cloudinaryService.uploadImage(
-        file.buffer,
-        file.mimetype,
-        cloudinaryPath,
-      );
-      return upload;
-    } catch (error) {
-      console.log('Failed to create project:', error);
-      return {
-        statusCode: 500,
-        success: false,
-        errorMessage: error.message,
-      };
-    }
-  }
+//       const result = await this.projectsService.createProject({
+//         name,
+//         pincode,
+//         contact_no_1,
+//         email_id_for_sales,
+//         disclaimer,
+//         contact_no_sales_1,
+//       });
+//       const cloudinaryPath = `${folderName}/${result.project_id}`;
+//       const upload = await this.cloudinaryService.uploadImage(
+//         file.buffer,
+//         file.mimetype,
+//         cloudinaryPath,
+//       );
+//       return upload;
+//     } catch (error) {
+//       console.log('Failed to create project:', error);
+//       return {
+//         statusCode: 500,
+//         success: false,
+//         errorMessage: error.message,
+//       };
+//     }
+//   }
 
-  @Post('backblaze')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: memoryStorage(),
-      limits: {
-        fileSize: 10 * 1024 * 1024, // 10 MB in bytes
-      },
-    }),
-  )
-  async createProjectBackblaze(
-    @Body() data: any,
-    @Req() req: Request,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    try {
-      const url = req.originalUrl.split('/')[1];
-      const folderName =
-        url.slice(0, 1).toUpperCase() + url.slice(1).toLowerCase();
+//   @Post('backblaze')
+//   @UseInterceptors(
+//     FileInterceptor('file', {
+//       storage: memoryStorage(),
+//       limits: {
+//         fileSize: 10 * 1024 * 1024, // 10 MB in bytes
+//       },
+//     }),
+//   )
+//   async createProjectBackblaze(
+//     @Body() data: any,
+//     @Req() req: Request,
+//     @UploadedFile() file: Express.Multer.File,
+//   ) {
+//     try {
+//       const url = req.originalUrl.split('/')[1];
+//       const folderName =
+//         url.slice(0, 1).toUpperCase() + url.slice(1).toLowerCase();
 
-      const result = await this.projectsService.createProject(data);
-      const backBlazePath = `${folderName}/${result.project_id}`;
-      const upload = await this.backBlazeService.uploadFile(
-        file,
-        backBlazePath,
-      );
-      return upload;
-    } catch (error) {
-      console.log('Failed to create project:', error);
-      return {
-        statusCode: 500,
-        success: false,
-        errorMessage: error.message,
-      };
-    }
-  }
+//       const result = await this.projectsService.createProject(data);
+//       const backBlazePath = `${folderName}/${result.project_id}`;
+//       const upload = await this.backBlazeService.uploadFile(
+//         file,
+//         backBlazePath,
+//       );
+//       return upload;
+//     } catch (error) {
+//       console.log('Failed to create project:', error);
+//       return {
+//         statusCode: 500,
+//         success: false,
+//         errorMessage: error.message,
+//       };
+//     }
+//   }
 
-  @Post('vercel')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: memoryStorage(),
-      limits: {
-        fileSize: 10 * 1024 * 1024, // 10 MB in bytes
-      },
-    }),
-  )
-  async createProjectVercel(
-    @Body() data: any,
-    @Req() req: Request,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    try {
-      const url = req.originalUrl.split('/')[1];
-      const folderName =
-        url.slice(0, 1).toUpperCase() + url.slice(1).toLowerCase();
+//   @Post('vercel')
+//   @UseInterceptors(
+//     FileInterceptor('file', {
+//       storage: memoryStorage(),
+//       limits: {
+//         fileSize: 10 * 1024 * 1024, // 10 MB in bytes
+//       },
+//     }),
+//   )
+//   async createProjectVercel(
+//     @Body() data: any,
+//     @Req() req: Request,
+//     @UploadedFile() file: Express.Multer.File,
+//   ) {
+//     try {
+//       const url = req.originalUrl.split('/')[1];
+//       const folderName =
+//         url.slice(0, 1).toUpperCase() + url.slice(1).toLowerCase();
 
-      const result = await this.projectsService.createProject(data);
-      const vercelPath = `${folderName}/${result.project_id}`;
-      const upload = await this.vercelService.uploadFile(file, vercelPath);
-      return upload;
-    } catch (error) {
-      console.log('Failed to create project:', error);
-      return {
-        statusCode: 500,
-        success: false,
-        errorMessage: error.message,
-      };
-    }
-  }
-}
+//       const result = await this.projectsService.createProject(data);
+//       const vercelPath = `${folderName}/${result.project_id}`;
+//       const upload = await this.vercelService.uploadFile(file, vercelPath);
+//       return upload;
+//     } catch (error) {
+//       console.log('Failed to create project:', error);
+//       return {
+//         statusCode: 500,
+//         success: false,
+//         errorMessage: error.message,
+//       };
+//     }
+//   }
+// }

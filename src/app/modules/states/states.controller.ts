@@ -999,6 +999,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
   Post,
   Put,
@@ -1006,7 +1007,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ApiResponse, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger';
+import {
+  ApiResponse,
+  ApiOperation,
+  ApiParam,
+  ApiBody,
+  ApiTags,
+  ApiBearerAuth,
+  ApiHeader,
+  ApiHeaders,
+} from '@nestjs/swagger';
 import { StateService } from './states.services';
 import {
   AggregateStateSuccess,
@@ -1027,10 +1037,16 @@ import {
 } from 'src/shared/constants/messages/error.messages';
 import { CreateStateDto } from './dto/CreateState.dto';
 import { UpdateStateDto } from './dto/UpdateState.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 
+@ApiTags('State')
 @Controller('states')
 export class StatesController {
-  constructor(private readonly stateService: StateService) {}
+  constructor(
+    private readonly stateService: StateService,
+    private configService: ConfigService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all states' })
@@ -1126,7 +1142,7 @@ export class StatesController {
       },
     },
   })
-  @SuccessError()
+  // @SuccessError()
   async findAll(@Req() req: Request) {
     const { method, originalUrl, ip } = req;
     const userAgent = req.get('user-agent') || '';
@@ -1184,6 +1200,7 @@ export class StatesController {
     }
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/include-all')
   @SuccessError()
@@ -1283,26 +1300,26 @@ export class StatesController {
     }
   }
 
-  @Get('/date')
-  @SuccessError()
-  async getDate() {
-    try {
-      const date = await this.stateService.date();
+  // @Get('/date')
+  // @SuccessError()
+  // async getDate() {
+  //   try {
+  //     const date = await this.stateService.date();
 
-      return {
-        statusCode: 200,
-        success: true,
-        message: 'Retrieved date successfully.',
-        data: date,
-      };
-    } catch (error) {
-      return {
-        statusCode: 500,
-        success: false,
-        errorMessage: error.message,
-      };
-    }
-  }
+  //     return {
+  //       statusCode: 200,
+  //       success: true,
+  //       message: 'Retrieved date successfully.',
+  //       data: date,
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       statusCode: 500,
+  //       success: false,
+  //       errorMessage: error.message,
+  //     };
+  //   }
+  // }
 
   /**
    *
@@ -1564,9 +1581,12 @@ export class StatesController {
    * @param data create state payload
    * @returns statusCode,success flag,message,data: newly created state
    */
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Post state' })
+  @ApiHeader({ name: 'Token', description: 'Token' })
   @ApiBody({
     schema: {
       type: 'object',
@@ -2008,6 +2028,32 @@ export class StatesController {
       };
     } catch (error) {
       // Handle errors and return an internal server error response
+      return {
+        statusCode: 500,
+        success: false,
+        errorMessage: error.message,
+      };
+    }
+  }
+
+  @Get('env')
+  async getEnv(@Req() req: Request) {
+    try {
+      console.log('envvvvvvvvvv');
+      const result1 = this.stateService.getEnvironmentValues();
+      return result1;
+    } catch (error) {
+      logger.error({
+        message: `Error retrieving all states: ${error.message}`,
+        timestamp: new Date().toISOString(),
+        level: 'error',
+        parameters: {
+          method: req.method,
+          originalUrl: req.originalUrl,
+          ip: req.ip,
+          userAgent: req.get('user-agent') || '',
+        },
+      });
       return {
         statusCode: 500,
         success: false,

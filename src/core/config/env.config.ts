@@ -8,6 +8,7 @@ import {
   IsPositive,
 } from 'class-validator';
 import { plainToClass, Transform } from 'class-transformer';
+import * as dotenv from 'dotenv';
 
 export class EnvConfig {
   @IsInt()
@@ -37,14 +38,14 @@ export class EnvConfig {
   @IsString()
   DEVELOPMENT_API_URL: string;
 
-  @IsUrl()
+  @IsString()
   PRODUCTION_API_URL: string;
 
-  @IsUrl()
+  @IsString()
   STAGING_API_URL: string;
 
   @IsString()
-  @IsIn(['development', 'production', 'staging'])
+  @IsIn(['development', 'production', 'staging', 'testing'])
   NODE_ENV: string;
 
   @IsString()
@@ -52,6 +53,7 @@ export class EnvConfig {
 }
 
 export function validateConfig(config: Record<string, unknown>) {
+  console.log('config', config);
   const validatedConfig = plainToClass(EnvConfig, config, {
     enableImplicitConversion: true,
   });
@@ -62,6 +64,12 @@ export function validateConfig(config: Record<string, unknown>) {
   if (errors.length > 0) {
     throw new Error(errors.toString());
   }
+
+  Object.keys(config).forEach((key) => {
+    if (config[key] !== undefined && validatedConfig[key] !== config[key]) {
+      console.warn(`Warning: Using fallback value '${config[key]}' for ${key}`);
+    }
+  });
 
   return validatedConfig;
 }

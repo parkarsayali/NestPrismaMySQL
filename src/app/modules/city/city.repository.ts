@@ -1,11 +1,12 @@
 import _ from 'lodash';
-import BaseRepository from 'src/core/repository/baseRepository';
 import {
-  MODELS_NAME,
-  ModelScalarFields,
+  AnyRecord,
   ModelStructure,
   ModelTypes,
-} from 'src/core/repository/prisma-repo';
+  ModelScalarFields,
+  MODELS_NAME,
+} from '../../../core/repository/prisma-repo';
+import BaseRepository from 'src/core/repository/baseRepository';
 
 // This type will be used if you want to extends the functions in city Class
 

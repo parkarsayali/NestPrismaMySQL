@@ -71,9 +71,10 @@ export class CountryController {
   //   }
   // countryController
 
-  @Get(':id')
+  @Get('test/:id')
   @SuccessError()
   async findOne(@Param('id') id: string) {
+    console.log('country');
     const parseId = parseInt(id);
     if (isNaN(parseId) || parseId <= 0) {
       return {
@@ -189,5 +190,11 @@ export class CountryController {
         errorMessage: error.message,
       };
     }
+  }
+
+  @Get('data')
+  async getEnvironmentValues() {
+    console.log('country env');
+    return this.countryService.getEnvironmentValues();
   }
 }

@@ -5,24 +5,15 @@ generator client {
 generator repo {
   provider = "prisma-repo"
   output   = "../../generated"
-  query    = "true"
   info     = "true"
-  error    = "true"
   warn     = "true"
+  query    = "true"
+  error    = "true"
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-}
-
-generator repo {
-  provider = "prisma-repo"
-  output   = "../../generated"
-  query    = true
-  warn     = true
-  info     = true
-  error    = true
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -105,19 +96,34 @@ model state {
   name        String    @db.VarChar(100)
   alpha_code  String    @db.VarChar(10)
   country_id  Int
-  created_on  DateTime  @default(dbgenerated("(now())")) @db.DateTime(0)
-  modified_on DateTime? @db.DateTime(0)
+  created_on  DateTime  @default(dbgenerated("(now())")) @db.Timestamp(0)
+  modified_on DateTime? @db.Timestamp(0)
   is_deleted  Boolean   @default(false)
-}
-
-model todos {
-  id          Int    @id @default(autoincrement())
-  name        String @db.VarChar(255)
-  description String @db.VarChar(255)
+  states          state[]   // Establishing the one-to-many relationship
 }
 
 model users {
-  user_id Int    @id
-  name    String @db.VarChar(255)
-  age     Int
+  user_id     Int       @id @default(autoincrement())
+  first_name  String    @default("") @db.VarChar(50)
+  last_name   String    @default("") @db.VarChar(50)
+  email_id    String    @default("") @db.VarChar(50)
+  mobile_no   String?   @default("") @db.VarChar(15)
+  created_on  DateTime  @default(dbgenerated("(now())")) @db.Timestamp(0)
+  created_by  Int       @default(0)
+  modified_on DateTime? @db.Timestamp(0)
+  modified_by Int?
+  is_deleted  Boolean   @default(false)
+  countries  country   @relation(fields: [country_id], references: [country_id])
+}
+
+model user_login {
+  user_login_id Int       @id @default(autoincrement())
+  user_id       Int
+  username      String    @unique(map: "username") @db.VarChar(50)
+  password      String    @db.VarChar(255)
+  created_on    DateTime  @default(dbgenerated("(now())")) @db.Timestamp(0)
+  created_by    Int
+  modified_on   DateTime? @db.Timestamp(0)
+  modified_by   Int?
+  is_deleted    Boolean   @default(false)
 }

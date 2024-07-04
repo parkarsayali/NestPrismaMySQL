@@ -16,6 +16,12 @@ export class AppService {
     };
   }
 
+  getEnvironment() {
+    return {
+      dbEnv: this.configService.get<string>('DEMO'),
+    };
+  }
+
   getHello(): string {
     return 'Hello 12-06-2024';
   }

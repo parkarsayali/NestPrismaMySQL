@@ -13,7 +13,14 @@ import { VercelController } from 'src/shared/vercel/vercel.controller';
 import { VercelService } from 'src/shared/vercel/vercel.service';
 import { BackblazeController } from 'src/shared/backblaze/backblaze.controller';
 import { BackblazeService } from 'src/shared/backblaze/backblaze.service';
+import { MyConfigService } from 'src/core/config/config.service';
 // import { LoggerMiddleware } from 'src/core/middleware/logger.middleware';
+
+const envFilePath = process.env.NODE_ENV
+  ? `.env.${process.env.NODE_ENV}`
+  : '.env';
+
+console.log('Using env file path:', envFilePath);
 
 @Module({
   imports: [
@@ -21,7 +28,13 @@ import { BackblazeService } from 'src/shared/backblaze/backblaze.service';
       isGlobal: true,
       load: [configurations],
 
-      envFilePath: `.env.${process.env.NODE_ENV || 'development'}.env`,
+      // envFilePath: `.env.${process.env.NODE_ENV || 'development'}.env`,
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.env.production'
+          : process.env.NODE_ENV === 'testing'
+            ? '.env.testing'
+            : '.env.development',
     }),
     MulterModule.register({ dest: './src/uploads' }),
     ...Modules,
@@ -32,7 +45,13 @@ import { BackblazeService } from 'src/shared/backblaze/backblaze.service';
     VercelController,
     BackblazeController,
   ],
-  providers: [AppService, CloudinaryService, VercelService, BackblazeService],
+  providers: [
+    AppService,
+    CloudinaryService,
+    VercelService,
+    BackblazeService,
+    MyConfigService,
+  ],
 })
 // export class AppModule implements NestModule {
 //   configure(consumer: MiddlewareConsumer) {

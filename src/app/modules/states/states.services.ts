@@ -1,15 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import StoredProcedureRepository from 'src/core/repository/stored-procedure-repository';
-import { StateRepository } from './state.repository';
+// import { StateRepository } from './state.repository';
 import { ApplyTransformInterceptorToMethod } from 'src/core/decorator/dto.transform.decorator';
 import { State } from '../models/class.transformer.ts/state';
+import { ConfigService } from '@nestjs/config';
+import StateRepository from './state.repository';
 
 @Injectable()
 export class StateService {
   constructor(
     private readonly stateRepo: StateRepository,
     private readonly storedProcedureRepo: StoredProcedureRepository,
+    private readonly configService: ConfigService,
   ) {}
 
   //select
@@ -47,7 +50,7 @@ export class StateService {
       includeDeleted,
     };
     try {
-      return await StateRepository.findAll({}, {}, {}, options);
+      return await StateRepository.findAll({}, {}, {}, {});
     } catch (error) {
       console.error(error);
       throw error;
@@ -186,9 +189,9 @@ export class StateService {
     return {};
   }
 
-  async date() {
-    return this.stateRepo.getDate();
-  }
+  // async date() {
+  //   return this.stateRepo.getDate();
+  // }
   @ApplyTransformInterceptorToMethod(State)
   async getAllSP(): Promise<State[]> {
     return this.storedProcedureRepo.execute('sp_get_state_all_v1');
@@ -247,5 +250,12 @@ export class StateService {
       console.error('Error aggregating states:', error);
       throw new Error('Failed to aggregate states');
     }
+  }
+
+  async getEnvironmentValues() {
+    console.log('get env vals');
+    return {
+      data: this.configService.get<string>('DB_PORT'),
+    };
   }
 }

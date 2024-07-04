@@ -1,5 +1,11 @@
-// This type will be used if you want to extends the functions in country Class
-
+import _ from 'lodash';
+// import {
+//   AnyRecord,
+//   ModelStructure,
+//   ModelTypes,
+//   ModelScalarFields,
+//   MODELS_NAME,
+// } from '../core/repository/prisma-repo';
 import BaseRepository from 'src/core/repository/baseRepository';
 import {
   MODELS_NAME,
@@ -7,6 +13,8 @@ import {
   ModelStructure,
   ModelTypes,
 } from 'src/core/repository/prisma-repo';
+
+// This type will be used if you want to extends the functions in country Class
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 type Where = ModelTypes[typeof MODELS_NAME.COUNTRY]['Where'];
@@ -22,4 +30,6 @@ type Scalar = ModelScalarFields<typeof MODELS_NAME.COUNTRY>;
 type Model = ModelStructure[typeof MODELS_NAME.COUNTRY];
 /*  eslint-enable @typescript-eslint/no-unused-vars */
 
-export class CountryRepository extends BaseRepository(MODELS_NAME.COUNTRY) {}
+class CountryRepository extends BaseRepository(MODELS_NAME.COUNTRY) {}
+
+export default CountryRepository;

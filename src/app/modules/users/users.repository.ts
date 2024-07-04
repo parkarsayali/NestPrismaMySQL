@@ -1,12 +1,18 @@
 import _ from 'lodash';
-import BaseRepository from '../../core/repository/baseRepository';
+// import {
+//   AnyRecord,
+//   ModelStructure,
+//   ModelTypes,
+//   ModelScalarFields,
+//   MODELS_NAME,
+// } from '../core/repository/prisma-repo';
+import BaseRepository from 'src/core/repository/baseRepository';
 import {
-  AnyRecord,
+  MODELS_NAME,
+  ModelScalarFields,
   ModelStructure,
   ModelTypes,
-  ModelScalarFields,
-  MODELS_NAME,
-} from '../../core/repository/prisma-repo';
+} from 'src/core/repository/prisma-repo';
 
 // This type will be used if you want to extends the functions in users Class
 
@@ -24,6 +30,6 @@ type Scalar = ModelScalarFields<typeof MODELS_NAME.USERS>;
 type Model = ModelStructure[typeof MODELS_NAME.USERS];
 /*  eslint-enable @typescript-eslint/no-unused-vars */
 
-class usersRepository extends BaseRepository(MODELS_NAME.USERS) {}
+class UsersRepository extends BaseRepository(MODELS_NAME.USERS) {}
 
-export default usersRepository;
+export default UsersRepository;

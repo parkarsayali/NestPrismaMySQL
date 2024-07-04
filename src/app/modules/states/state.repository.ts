@@ -1,4 +1,11 @@
 import _ from 'lodash';
+// import {
+//   AnyRecord,
+//   ModelStructure,
+//   ModelTypes,
+//   ModelScalarFields,
+//   MODELS_NAME,
+// } from '../core/repository/prisma-repo';
 import BaseRepository from 'src/core/repository/baseRepository';
 import {
   MODELS_NAME,
@@ -22,21 +29,7 @@ type GroupBy = ModelTypes[typeof MODELS_NAME.STATE]['GroupBy'];
 type Scalar = ModelScalarFields<typeof MODELS_NAME.STATE>;
 type Model = ModelStructure[typeof MODELS_NAME.STATE];
 /*  eslint-enable @typescript-eslint/no-unused-vars */
-// @Injectable()
-export class StateRepository extends BaseRepository(MODELS_NAME.STATE) {
-  static getDate() {
-    throw new Error('Method not implemented.');
-  }
-  constructor() {
-    super();
-  }
 
-  async getDate(): Promise<any> {
-    try {
-      return Date();
-    } catch (error) {
-      console.error('Error fetching states:', error);
-      throw error;
-    }
-  }
-}
+class StateRepository extends BaseRepository(MODELS_NAME.STATE) {}
+
+export default StateRepository;

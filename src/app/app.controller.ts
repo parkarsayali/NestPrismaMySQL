@@ -1,6 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { JwtAuthGuard } from 'src/core/auth/jwt-auth-guard';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('app')
 export class AppController {
@@ -15,5 +16,10 @@ export class AppController {
   @Get()
   getDatabaseConfig() {
     return this.appService.getDatabaseConfig();
+  }
+
+  @Get('env')
+  getEnvironment() {
+    return this.appService.getEnvironment();
   }
 }

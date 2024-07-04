@@ -1,11 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CreateCountryDto, UpdateCountryDto } from './country.DTO';
-import { CountryRepository } from './country.repository';
+import CountryRepository from './country.repository';
+import { ConfigService } from '@nestjs/config';
+// import { CountryRepository } from './country.repository';
 
 @Injectable()
 export class CountryService {
-  constructor(private readonly countryRepo: CountryRepository) {}
+  constructor(
+    private readonly countryRepo: CountryRepository,
+    private readonly configService: ConfigService,
+  ) {}
 
   //findAll with select
   async findAllSelect(includeDeleted = false) {
@@ -67,5 +72,12 @@ export class CountryService {
   async delete(id: number) {
     await CountryRepository.delete(id);
     return {};
+  }
+
+  async getEnvironmentValues() {
+    console.log('get env vals');
+    return {
+      data: this.configService.get<string>('DB_USERNAME'),
+    };
   }
 }
